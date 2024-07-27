@@ -1,6 +1,6 @@
 # 🕵️‍♂️ AI-Powered Fake News Detection System
 
-![AI News Banner](https://your-image-host.com/ai_news_banner.jpg)
+![AI News Banner](https://www.techrepublic.com/wp-content/uploads/2023/06/tr61223-ai-news.jpeg)
 
 Welcome to the AI-Powered Fake News Detection System! This project combines cutting-edge artificial intelligence with modern web development to combat the spread of misinformation.
 
@@ -15,7 +15,7 @@ Experience the power of AI in action! Try our live demo [here](https://your-demo
 - 📊 **Real-time Results**: Get immediate feedback on the credibility of news articles.
 - 📱 **Responsive Design**: Access the tool from any device, anywhere.
 
-![AI Analysis](https://your-image-host.com/ai_analysis.gif)
+![AI Analysis](https://miro.medium.com/v2/resize:fit:1400/1*NVvYsmhqc6v9cB6l6dQDdQ.gif)
 
 ## 🛠️ Technologies Used
 
@@ -23,6 +23,7 @@ Experience the power of AI in action! Try our live demo [here](https://your-demo
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+
 
 ## 🚀 Setup
 
