@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake News Detector</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--primary-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .detector-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            background-color: #2980b9;
+        }
+        
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .result-real {
+            background-color: #a8e6cf;
+            border-left: 4px solid #1abc9c;
+        }
+        
+        .result-fake {
+            background-color: #ffd3b6;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .updating {
+            background-color: #fff3cd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        
+        .news-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in;
+        }
+        
+        .news-item {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            transition: transform 0.2s ease;
+        }
+        
+        .news-item:hover {
+            transform: translateX(10px);
+            background-color: #f8f9fa;
+        }
+        
+        .news-title {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .news-source {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .news-date {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header animate__animated animate__fadeIn">
+        <h1>Fake News Detector</h1>
+        <p>Verify the authenticity of news articles using AI</p>
+    </div>
+    
+    <div class="container">
+        <div class="detector-section animate__animated animate__fadeInUp">
+            <div id="updating-message" class="updating">
+                <strong> Model Update in Progress</strong>
+                <p>Please wait while we update our detection system...</p>
+            </div>
+            
+            <h2>Check News Authenticity</h2>
+            <textarea id="news-text" rows="5" 
+                      placeholder="Enter news text here to verify its authenticity..."></textarea>
+            <button onclick="checkNews()">Analyze News</button>
+            <div id="result"></div>
+        </div>
+        
+        <div class="news-section animate__animated animate__fadeInUp">
+            <h2>Latest News Articles</h2>
+            {% for article in news_articles %}
+            <div class="news-item animate__animated animate__fadeIn">
+                <a href="{{ article.url }}" target="_blank" class="news-title">
+                    {{ article.title }}
+                </a>
+                <div class="news-source">
+                    Source: {{ article.source }}
+                </div>
+                <div class="news-date">
+                    Published: {{ article.publishedAt }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <script>
+        function checkNews() {
+            const text = document.getElementById('news-text').value;
+            const resultDiv = document.getElementById('result');
+            
+            // Show loading state
+            resultDiv.innerHTML = '<div class="updating">Analyzing...</div>';
+            resultDiv.style.display = 'block';
+            
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({text: text}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('updating-message').style.display = 'block';
+                    resultDiv.style.display = 'none';
+                } else {
+                    document.getElementById('updating-message').style.display = 'none';
+                    
+                    const confidence = (data.confidence * 100).toFixed(2);
+                    const resultClass = data.prediction === 'real' ? 
+                        'result-real' : 'result-fake';
+                    
+                    resultDiv.className = `${resultClass} animate__animated animate__fadeIn`;
+                    resultDiv.innerHTML = `
+                        <strong>Prediction: ${data.prediction.toUpperCase()}</strong>
+                        <br>
+                        Confidence: ${confidence}%
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = 'An error occurred while analyzing the text.';
+            });
+        }
+    </script>
+</body>
+</html>
